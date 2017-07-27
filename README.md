@@ -1,4 +1,4 @@
 # NameMatcher
-Person name matching tools
+Person Name Matching Tools
 
 (coming soon...)
