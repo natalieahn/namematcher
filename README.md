@@ -5,7 +5,7 @@ This repository contains Python code for a set of tools to match person names,
 including functionality specific to names beyond simple fuzzy string matching.
 The functions handle names ordered either "First [Middle] Last" or "Last, First [Middle]".
 They account for suffixes (e.g. "Jr", "III"), initials in place of first or middle names,
-and abbreviations (e.g. "AJ Smith" and "Adam Smith Jr").
+and abbreviations or acronyms (e.g. "AJ Smith" and "Adam Smith Jr").
 
 The functions also account for missing first or middle names, such as when a person often
 goes by their middle name. With the two strings "John Adam Smith" and "Adam Smith", the
