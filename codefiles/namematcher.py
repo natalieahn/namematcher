@@ -32,7 +32,7 @@ class NameMatcher:
 		# Users may wish to adjust and experiment with them on their own dataset.
 		# Detailed parameter explanations will be provided in the README file.
 		self.params = {'weights':[0.25, 0.66, 0.09],
-					  'disc_abbrev':0.95, 'disc_abbrevnotstart':0.6,
+					  'disc_abbrev':0.95, 'disc_abbrev_notstart':0.6,
 					  'disc_missing_fname':0.7, 'disc_missing_mname':0.95,
 					  'disc_missing_nickname':0.8, 'disc_initial':0.6,
 					  'disc_initial_mismatch':0.4, 'disc_acronym':0.5}
@@ -164,7 +164,7 @@ class NameMatcher:
 		if len(longer)!=len(shorter):
 			sim *= self.params['disc_abbrev']
 		if subsims.index(max(subsims)) > 0:
-			sim *= self.params['disc_abbrevnotstart']
+			sim *= self.params['disc_abbrev_notstart']
 		return sim
 
 	def _weighted_sum(self, sims_dict):
