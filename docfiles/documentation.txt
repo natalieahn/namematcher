@@ -1,0 +1,139 @@
+NameMatcher Documentation
+---------------------------------------------------------------------------
+Details for using NameMatcher class methods in namematcher.py
+
+Author: Natalie Ahn
+Last revised: August 2017
+
+
+---------------------------------------------------------------------------
+Class: NameMatcher
+
+    Parameters stored as object attributes:
+
+    weights:               Weights used in calculating the final name
+                           similarity score as a weighted sum of similarity
+                           scores for first/middle names, last name, and
+                           suffix. Must sum to 1.
+
+    Note: The discount parameters below represent fixed scoring rules
+    applied to common ways that person names might partially mismatch,
+    even if they are likely to represent the same person (such as the use
+    of initials, nicknames, etc). Using fixed scoring penalties for those
+    cases ensures that pairs of names aren't excessively penalized if they
+    happen to be very long (e.g. an initial used for a long versus a short
+    first name, which might otherwise have very different similarity scores).
+    These parameters are adjustable, so that uses who might have a database
+    with lots of first initials can reduce the penalty for those, or users
+    matching informal names that contain a lot of abbreviations or nicknames
+    can reduce the penalties for those, ideally through experimentation.
+
+    disc_abbrev:           Discount applied if two first or middle names
+                           are not of the same length. In that case, the
+                           match_names method uses the similarity score for
+                           the closest matching substrings, multiplied by
+                           disc_abbrev. This allows shortened versions of
+                           first names to be matched, as they are common,
+                           with some penalty but which the user can adjust,
+                           and with the same penalty applied regardless of
+                           how long the rest of the name is that was left off.
+
+    disc_abbrev_notstart:  Discount applied if the closest matching substring
+                           in the longer of two first/middle names does not
+                           start at the beginning of the string. For instance,
+                           "Xander" and "Alexander".
+
+    disc_missing_fname:    Discount applied if the closest matching
+                           subsequence of first/middle names does not start
+                           at the beginning of the longer sequence. For instance,
+                           "John Adam Smith" and "Adam Smith".
+
+    disc_missing_mname:    Discount applied if the closest matching
+                           subsequence of first/middle names does not extend
+                           to the end of the longer sequence. For instance,
+                           "John Adam Smith" and "John Smith". This is likely to
+                           be more common than a missing first name, for two
+                           names that do refer to the same person, hence two
+                           different parameters.
+
+    disc_missing_nickname: Discount applied if one name contains a designated
+                           nickname and the other does not. If either name
+                           contains an explicit nickname designated by quotes
+                           or parentheses, the match_names method will check
+                           for the closest match to the other name, using
+                           either the formal names not in quotes, or the
+                           nickname in quotes, then multiply by this discount.
+
+    disc_initial:           Discount applied if one first/middle name contains
+                           an initial, but the other does not. In that case
+                           the match_names method will check to see if the
+                           initial matches the first letter of the name in
+                           the corresponding first/middle sequence, but will
+                           multiply by this discount.
+
+    disc_initial_mismatch: Discount applied if a first/middle initial does
+                           not match the first letter of the corresponding
+                           first/middle name in the other sequence. This
+                           discount should be large (i.e. closer to 0 than 1),
+                           but there is a chance of typos or an informal
+                           name with a different first initial (e.g. "E." for
+                           Edward elsewhere referred to as "Ted"), so users
+                           might not want this penalty to be too severe.
+
+    disc_acronym:          Discount applied if a two-letter first/middle name
+                           matches the first initials of two consecutive
+                           first/middle names in the other sequence (e.g.
+                           "Mary Jane" and "MJ") or the first initial of
+                           one first name and the "J" of a "Jr" or "II"
+                           suffix in the other sequence.
+
+
+Public Methods:
+---------------------------------------------------------------------------
+match_names(name1, name2[, speed='slow', min_last_sim=0.8])
+
+    This method takes two name strings and returns a similarity score from
+    0 (no similarity) to 1 (identical). It takes two optional parameters
+    speed and min_last_sim (only relevant when speed = 'fast'). By default
+    speed = 'slow', which means it will run through the full name matching
+    process for any two names. If speed = 'fast', the method will first
+    check to see if the two last names have a similarity greater than or
+    equal to min_last_sim. If so, it will proceed to compare the first
+    and middle names in detail. If not, it will take a shortcut of simply
+    applying the distance metric to the entire first-middle portion of each
+    name string, without splitting apart first and middle names and seeking
+    the most similar subsequence (potentially matching a first to a middle
+    name, etc). The method uses the scoring parameters defined above.
+
+---------------------------------------------------------------------------
+parse_name(name)
+
+    This method akes a name string (e.g. "First Middle Last Suffix" or
+    "Last, First Middle Suffix" or any subset of those components) and
+    parses it into a dictionary object containing the following keys:
+
+        'first_names': a list of first and middle names (separate strings)
+        'last_name': a single last name string
+        'suffix': a single suffix string (empty string if none present)
+
+---------------------------------------------------------------------------
+find_closest_names(target_names, other_names)
+
+    This method takes two lists of names, the first a target list to search
+    for and the last the population list to search within. It returns a list
+    of matches in the order of the first list (target_names). The method
+    sorts the other_names population list alphabetically by last then first
+    names, then uses a binary search of an ordered list to find the closest
+    matching last name and at least beginning of a first name. The binary
+    search is just to find a starting point, based on overall string
+    similarity. Then the match_names method is performed on the surrounding
+    names in the population list, one by one out from the starting point.
+    The process records the closest matching name and score, and stops when
+    it reaches a point in each direction at which the last names have become
+    so disimilar that even a perfect match on first and middle names would
+    not beat the current best score. The method then stores the following
+    information on the best match in a tuple: 1) the closest matching name
+    found in the other_names list, 2) the original index of that closest
+    matching name in the other_names list, and 3) the similarity score.
+    The method returns a list of such tuples for each name in target_names.
+
