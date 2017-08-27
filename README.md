@@ -26,8 +26,8 @@ A function is also included for matching names from one target list to another l
 names, which sorts the population list alphabetically and uses a binary search to speed up
 the process of finding the closest match to each target name.
 
-Full documentation for the included methods and parameters is included in the file doc.txt,
-and examples for using the code are inluced in the file examples.py.
+Full documentation for the included methods and parameters is included in the file docfiles/documentation.txt,
+and examples for using the code are inluced in the file codefiles/examples.py.
 
 
 ### Copyright
