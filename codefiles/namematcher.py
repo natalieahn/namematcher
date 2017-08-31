@@ -22,8 +22,8 @@ class NameMatcher:
 	suffixes = {'junior', 'jr', 'senior', 'sr', 'ii', 'iii', 'iv'}
 	weight_order = ['first_names', 'last_name', 'suffix']
 
-	def __init__(self, distfun='levenstein'):
-		if distfun == 'levenstein':
+	def __init__(self, distfun='levenshtein'):
+		if distfun == 'levenshtein':
 			self.distfun = self._levenshtein_log
 		elif distfun == 'jaro_winkler':
 			self.distfun = lambda str1,str2: 1 - jaro_winkler(str1, str2)
