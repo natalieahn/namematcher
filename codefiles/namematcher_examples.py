@@ -1,11 +1,12 @@
 # NameMatcher
-# Example code for using the classes in namematcher.py
+# Example code for using the class/methods in namematcher.py
 # -----------------------------------------------------------------------------
 
 import re
 from namematcher import NameMatcher
 
 name_matcher = NameMatcher()
+
 
 # Match score for two names:
 score = name_matcher.match_names('Nat Ahn', 'Natalie Ahn')
